@@ -1,0 +1,23 @@
+pipeline {
+    agent {label 'linux'}
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from Git repository
+                git 'https://github.com/kishore18111997/war-test'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the project using Maven
+                sh 'mvn clean package'
+            }
+        }
+    }
+    
+    triggers {
+        // Poll the Git repository for changes every minute
+        pollSCM('* * * * *')
+    }
+}
