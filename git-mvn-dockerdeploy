@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/kishore18111997/CICDproject'
+            }
+        }
+        stage('maven build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('deploy to docker') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''docker stop kishore;
+docker rm -f kishore;
+docker rmi -f kishore18111997/tomcatproject;
+cd /opt/docker/; 
+docker build -t kishore18111997/tomcatproject .;
+docker run -d --name kishore -p 8080:8080 kishore18111997/tomcatproject;''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/opt/docker', remoteDirectorySDF: false, removePrefix: 'webapp/target', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+    }
+}
