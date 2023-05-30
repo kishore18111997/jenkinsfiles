@@ -1,0 +1,31 @@
+pipeline {
+    agent {label 'linux'}
+
+    stages {
+        stage('pull project source code from git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/kishore18111997/CICDproject'
+            }
+        }
+        stage('build using maven') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('copy artifacts to docker instance') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ls;', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '//opt/docker', remoteDirectorySDF: false, removePrefix: 'webapp/target', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+        stage('pull code from git for ansible') {
+            steps {
+                git 'https://github.com/kishore18111997/jenkins-ansible-dockerpushproject-DEMO'
+            }
+        }
+        stage('invoke ansible-playbook') {
+            steps {
+                ansiblePlaybook credentialsId: 'ansible-jenkins-pemfile', disableHostKeyChecking: true, installation: 'Ansible2', inventory: '/home/jenkins/jenkins-workspace/workspace/ansible-demo2/inventory.yml', playbook: '/home/jenkins/jenkins-workspace/workspace/ansible-demo2/dockerbuild-push-playbook.yml'
+            }
+        }
+    }
+}
