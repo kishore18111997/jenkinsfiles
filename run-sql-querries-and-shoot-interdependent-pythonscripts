@@ -1,0 +1,34 @@
+pipeline {
+    agent {label 'linux'}
+
+    stages {
+        stage('git clone') {
+            steps {
+                git 'https://github.com/kishore18111997/asmaitha-project'
+            }
+        }
+        stage('run sql querries on database') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'quest-watch', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'mysql -h asmaitha-db.cdy31g9xvrr1.ap-south-1.rds.amazonaws.com -u admin -P 3306 -p123456789 -e "use asmaitha;" -e "select * from asmaitha where username = \'kishore\';"', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+            }
+        }
+        stage('publish scripts to quest instance') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'quest-watch', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/ubuntu/environments', remoteDirectorySDF: false, removePrefix: '/home/jenkins/workspace/quest-watch-poc', sourceFiles: '/home/jenkins/workspace/quest-watch-poc/*.py')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+            }
+        }
+        stage('run scripts on quest-instance') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'quest-watch', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /home/ubuntu/environments;
+source my_env/bin/activate;
+python data_generator.py;
+python data_processor.py;
+python data_analyzer.py;''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+            }
+        }
+    }
+    triggers {
+        // Poll the Git repository for changes every minute
+        pollSCM('* * * * *')
+    }
+}
