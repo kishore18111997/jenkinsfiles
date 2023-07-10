@@ -1,0 +1,27 @@
+pipeline {
+  agent none
+  stages {
+    stage('execute python script') {
+      parallel {
+        stage('windowsslave2') {
+          agent {label 'windowsslave2'}
+          steps {
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'windowssalve2', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'python C:\\Users\\Administrator\\PycharmProject\\pythonProject\\venv\\runparalleljenkinsjob.py', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+          }
+        }
+        stage('windowsslave3') {
+          agent {label 'windowsslave3'}
+          steps {
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'windowssalve3', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'python C:\\Users\\Administrator\\PycharmProjects\\pythonProject\\venv\\runparalleljenkinsjob.py', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+          }
+        }
+        stage('windowsslave4') {
+          agent {label 'windowsslave4'}
+          steps {
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'windowsslave4', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'python C:\\Users\\Administrator\\PycharmProjects\\pythonProject\\venv\\runparalleljenkinsjob.py', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+          }
+        }
+      }
+    }
+  }
+}
