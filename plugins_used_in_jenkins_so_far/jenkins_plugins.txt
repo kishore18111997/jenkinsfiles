@@ -1,0 +1,21 @@
+1) role based strategy
+- to create different user accounts in jenkins
+
+2) publish over ssh
+- to copy and paste files from one machine to another and also run commands on remote machine
+
+3)
+ sonarqubescanner
+- this plugin is to configure sonarqube to jenkins
+
+4) ansible
+- this plugin is to configure ansible to jenkins
+
+5) mask passwords
+- this plugin will hide the passwords in console output after a job is run in jenkins
+
+6) blue ocean
+- this plugin gives blueocean button on a particular job dashboard which gives a visual output of all stages when clicked
+
+7) timestamp
+- to add time and date to jobs and also its stages then this plugin is useful
