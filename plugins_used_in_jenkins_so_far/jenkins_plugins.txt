@@ -19,3 +19,6 @@
 
 7) timestamp
 - to add time and date to jobs and also its stages then this plugin is useful
+
+8) Deploy to container
+- to deploy a artifact into a tomcat server or any other type of container [but i used this plugin to deploy on tomcat]
